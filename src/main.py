@@ -20,10 +20,10 @@ def callback(msg):
     goal = MoveGoal()
     goal.distance_to_move = msg.escape_distance
     if(msg.escape_angle >= 270):
-        goal.radiance_to_rotate = (360 - msg.escape_angle) * 2 * math.pi / 360.0
+        goal.radian_to_rotate = (360 - msg.escape_angle) * 2 * math.pi / 360.0
         goal.counterclockwise = False
     else:
-        goal.radiance_to_rotate = msg.escape_angle * 2 * math.pi / 360.0
+        goal.radian_to_rotate = msg.escape_angle * 2 * math.pi / 360.0
         goal.counterclockwise = True
     client.send_goal(goal, feedback_cb=feedback_cb)
 
@@ -34,8 +34,8 @@ def callback(msg):
     #successful_pub.publish(False)
 
 def feedback_cb(feedback):
-    rospy.loginfo('[Feerosdback] radiance_rotated: ' + str(feedback.radiance_rotated))
-    rospy.loginfo('[Feerosdback] radiance_left: ' + str(feedback.radiance_left))
+    rospy.loginfo('[Feerosdback] radian_rotated: ' + str(feedback.radian_rotated))
+    rospy.loginfo('[Feerosdback] radian_left: ' + str(feedback.radian_left))
     rospy.loginfo('[Feerosdback] distance_moved: ' + str(feedback.distance_moved))
     rospy.loginfo('[Feerosdback] distance_left: ' + str(feedback.distance_left))
     rospy.loginfo('')

@@ -1,7 +1,7 @@
 # Part 1: the goal, to be sent by the client
 #
 # Degree the robots need to rotate and the velocity
-float32 radiance_to_rotate
+float32 radian_to_rotate
 float32 angular_velocity
 bool counterclockwise
 
@@ -14,9 +14,9 @@ float32 updates_sent
 ---
 # Part 3: the feedback, to be sent periodically by the server during execution.
 # The degrees the robot has already rotated
-float32 radiance_rotated
+float32 radian_rotated
 # The degrees the robot still needs to rotate
-float32 radiance_left
+float32 radian_left
 # The distance the robot has already moved
 float32 distance_moved
 # The distance the robot still needs to rotate

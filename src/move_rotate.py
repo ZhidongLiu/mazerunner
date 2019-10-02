@@ -14,19 +14,20 @@ def callback(msg):
     global current_pose
     current_pose = msg.pose.pose
 
+#Convert angles to radian
 def get_radian(current_pose):
     (roll, pitch, theta_radian) = euler_from_quaternion([current_pose.orientation.x, current_pose.orientation.y, current_pose.orientation.z, current_pose.orientation.w])
     return theta_radian
 
 
-#in this method we will use euler_from_quaternion function to get the radiance
-def get_target_radiance(start_radiance, radiance_to_change, isRotateCounterclock):
+#in this method we will use euler_from_quaternion function to get the radian
+def get_target_radian(start_radian, radian_to_change, isRotateCounterclock):
     #get the target radian
     target_angle_radian = 0.0
     if(isRotateCounterclock):
-        target_angle_radian = (radiance_to_change + start_radiance) % (2 * math.pi)
+        target_angle_radian = (radian_to_change + start_radian) % (2 * math.pi)
     else:
-        target_angle_radian = (-1 * radiance_to_change + start_radiance) % (2 * math.pi)
+        target_angle_radian = (-1 * radian_to_change + start_radian) % (2 * math.pi)
     if(target_angle_radian > math.pi):
         target_angle_radian = target_angle_radian - 2 *math.pi 
     return target_angle_radian
@@ -35,15 +36,15 @@ def get_target_radiance(start_radiance, radiance_to_change, isRotateCounterclock
 def do_action(goal):
     global current_pose
 
-    start_radiance = get_radian(current_pose)
+    start_radian = get_radian(current_pose)
 
-    radiance_to_change = goal.radiance_to_rotate
+    radian_to_change = goal.radian_to_rotate
     distance_to_move = goal.distance_to_move
     isRotateCounterclock = goal.counterclockwise
 
     feedback = MoveFeedback()
-    feedback.radiance_rotated = 0
-    feedback.radiance_left = radiance_to_change
+    feedback.radian_rotated = 0
+    feedback.radian_left = radian_to_change
     feedback.distance_moved = 0
     feedback.distance_left = distance_to_move
 
@@ -58,7 +59,7 @@ def do_action(goal):
     
     pub.publish(speed)
 
-    target_angle_radian = get_target_radiance(start_radiance, radiance_to_change, isRotateCounterclock)
+    target_angle_radian = get_target_radian(start_radian, radian_to_change, isRotateCounterclock)
     
     while abs(get_radian(current_pose) - target_angle_radian) > 0.1:
         if server.is_preempt_requested():
@@ -67,8 +68,8 @@ def do_action(goal):
             server.set_preempted(result, "Move preempted")
 
         
-        feedback.radiance_rotated = abs(start_radiance - get_radian(current_pose))
-        feedback.radiance_left = abs(get_radian(current_pose) - target_angle_radian)
+        feedback.radian_rotated = abs(start_radian - get_radian(current_pose))
+        feedback.radian_left = abs(get_radian(current_pose) - target_angle_radian)
         print "current" + str(get_radian(current_pose))
         print "target" + str(target_angle_radian)
         print ""
