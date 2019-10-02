@@ -1,0 +1,4 @@
+<launch>
+    <node name="main" pkg="mazerunner" type="main.py" output="screen"/>
+    <node name="rotate_server" pkg="mazerunner" type="rotate_server.py" output="screen"/>
+</launch>

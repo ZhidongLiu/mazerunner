@@ -1,0 +1,2 @@
+float32 escape_angle
+float32 escape_distance
