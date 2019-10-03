@@ -1,48 +1,52 @@
 #! /usr/bin/env python
 import rospy
 import math
+import time
 import actionlib
+from geometry_msgs.msg import Twist
 from mazerunner.msg import Escape_info
-from mazerunner.msg import MoveAction, MoveGoal, MoveResult, MoveFeedback
+from mazerunner.msg import RotateAction, RotateGoal, RotateResult, RotateFeedback
 from std_msgs.msg import Bool
 
 
 rospy.init_node('Main')
 
 def callback(msg):
-    #subscibe to the pulished topic and do FakeNLP service to get the angle that need to be cahnged     
+    #subscibe to the pulished topic and do FakeNLP service to get the angle that need to be changed     
 
-    #do server action
-    #successful_pub.publish(True)
+    twist = Twist()
+    pub.publish(twist)
+
+    print msg.escape_angle
+    print msg.escape_distance
+    time.sleep(2.0)
 
     rospy.loginfo("Waiting for server...")
     client.wait_for_server()
-    goal = MoveGoal()
-    goal.distance_to_move = msg.escape_distance
-    if(msg.escape_angle >= 270):
-        goal.radian_to_rotate = (360 - msg.escape_angle) * 2 * math.pi / 360.0
+    goal = RotateGoal()
+    goal.distance = msg.escape_distance
+    goal.angular_velocity = math.pi/10
+    goal.linear_velocity = 0.1
+
+    if msg.escape_angle >= 270:
+        goal.degrees_to_rotate = 360 - msg.escape_angle
         goal.counterclockwise = False
     else:
-        goal.radian_to_rotate = msg.escape_angle * 2 * math.pi / 360.0
+        goal.degrees_to_rotate = msg.escape_angle
         goal.counterclockwise = True
-    client.send_goal(goal, feedback_cb=feedback_cb)
+
+    client.send_goal(goal)
+    # client.send_goal(goal, feedback_cb=feedback_cb)
 
     client.wait_for_result()
     rospy.loginfo('[Result] State: %d'%(client.get_state()))
     rospy.loginfo('[Result] Status: %s'%(client.get_goal_status_text()))
-    rospy.loginfo('[Result] Updates sent: %d'%(client.get_result().updates_sent))
-    #successful_pub.publish(False)
+    time.sleep(4)
 
-def feedback_cb(feedback):
-    rospy.loginfo('[Feerosdback] radian_rotated: ' + str(feedback.radian_rotated))
-    rospy.loginfo('[Feerosdback] radian_left: ' + str(feedback.radian_left))
-    rospy.loginfo('[Feerosdback] distance_moved: ' + str(feedback.distance_moved))
-    rospy.loginfo('[Feerosdback] distance_left: ' + str(feedback.distance_left))
-    rospy.loginfo('')
-
-
-client = actionlib.SimpleActionClient('move_rotate',MoveAction)
 sub = rospy.Subscriber('escape_info', Escape_info, callback)
+client = actionlib.SimpleActionClient('rotate',RotateAction)
 
-#successful_pub = rospy.Publisher('needStop', Bool, queue_size=1)
+pub = rospy.Publisher('/cmd_vel', Twist, queue_size = 1)
+time.sleep(2.0)
+
 rospy.spin()

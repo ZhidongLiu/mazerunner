@@ -1,5 +1,0 @@
-<launch>
-    <node name="escape_info_publisher" pkg="mazerunner" type="escape_info_publisher.py" output="screen"/>
-    <node name="main" pkg="mazerunner" type="main.py" output="screen"/>
-    <node name="move_rotate" pkg="mazerunner" type="move_rotate.py" output="screen"/>
-</launch>
