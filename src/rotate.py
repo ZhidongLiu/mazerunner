@@ -17,7 +17,6 @@ def do_move(goal):
     
     has_turned = False
     relative_angle = 0
-    target_distance = goal.distance
     rate = rospy.Rate(10)
 
     # Converting from angles to radians
@@ -81,21 +80,8 @@ def do_move(goal):
     move_msg.angular.z = 0
     rotation_publisher.publish(move_msg)
 
-    time.sleep(1.0)
-    
-    start_time = time.time()
-    while (time.time() - start_time) * move_msg.linear.x < target_distance:
-        move_msg.linear.x = goal.linear_velocity
-        rotation_publisher.publish(move_msg)
-        print "Moving Signal given"
-        distance_left = target_distance - (time.time() - start_time) * move_msg.linear.x
-        print "distance left, %s" % distance_left
-        rate.sleep()
-
-    move_msg.linear.x = 0.0
-    rotation_publisher.publish(move_msg)
     result = RotateResult()
-    server.set_succeeded(result, "Move Completed")
+    server.set_succeeded(result, "Rotation Completed")
     time.sleep(2.0)
 
 # Get current orientation
@@ -111,7 +97,7 @@ def odometryCb(msg):
     current_rotation = yaw
 
 # Declare that we are a node
-rospy.init_node('rotate_server')
+rospy.init_node('rotate')
 rospy.Subscriber('odom', Odometry, odometryCb)
 
 # Declare that this node will handle actions
