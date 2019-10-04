@@ -15,12 +15,37 @@ def do_move(goal):
     move_forward_publisher = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     move_msg = Twist()
 
+    # start_time = time.time()
+    # while (time.time() - start_time) * move_msg.linear.x < target_distance:
+    #     move_msg.linear.x = goal.linear_velocity
+    #     move_forward_publisher.publish(move_msg)
+    #     print "Moving Signal given"
+    #     distance_left = target_distance - (time.time() - start_time) * move_msg.linear.x
+    #     print "distance left, %s" % distance_left
+    #     rate.sleep()
+
     start_time = time.time()
-    while (time.time() - start_time) * move_msg.linear.x < target_distance:
+    while (time.time() - start_time) * move_msg.linear.x < target_distance * 0.25:
+        move_msg.linear.x = goal.linear_velocity * 0.5
+        move_forward_publisher.publish(move_msg)
+        print "Moving Signal given"
+        distance_left = target_distance - (time.time() - start_time) * move_msg.linear.x
+        print "distance left, %s" % distance_left
+        rate.sleep()
+    start_time = time.time()
+    while (time.time() - start_time) * move_msg.linear.x < target_distance * 0.5:
         move_msg.linear.x = goal.linear_velocity
         move_forward_publisher.publish(move_msg)
         print "Moving Signal given"
         distance_left = target_distance - (time.time() - start_time) * move_msg.linear.x
+        print "distance left, %s" % distance_left
+        rate.sleep()
+    start_time = time.time()
+    move_msg.linear.x = goal.linear_velocity * 0.5
+    while (time.time() - start_time) * move_msg.linear.x < target_distance * 0.25:
+        move_forward_publisher.publish(move_msg)
+        print "Moving Signal given"
+        distance_left = 0.25 * target_distance - (time.time() - start_time) * move_msg.linear.x
         print "distance left, %s" % distance_left
         rate.sleep()
 

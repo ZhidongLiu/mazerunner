@@ -31,8 +31,8 @@ def scan_callback(msg):
             break
         elif frontview_scan[index] == 0:
             continue
-        elif abs(frontview_scan[index] - frontview_scan[index+1]) > 0.25 and frontview_scan[index+1] != 0:
-            if frontview_scan[index] - frontview_scan[index+1] > 0.25:
+        elif abs(frontview_scan[index] - frontview_scan[index+1]) > 0.3 and frontview_scan[index+1] != 0:
+            if frontview_scan[index] - frontview_scan[index+1] > 0.3:
                 escape_route_left = False
             obstacle_angle_found = True
             obstacle_angle = index + 270

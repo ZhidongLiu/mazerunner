@@ -24,14 +24,11 @@ def callback(msg):
     move_forward_goal = MoveForwardGoal()
 
     move_forward_goal.distance = msg.escape_distance
-    move_forward_goal.linear_velocity = 0.1
+    move_forward_goal.linear_velocity = 0.18
 
     rotate_goal.angular_velocity = math.pi/12
 
     if msg.escape_possible:
-        
-        print msg.escape_angle
-        print msg.escape_distance
 
         if msg.escape_angle >= 270:
             rotate_goal.degrees_to_rotate = 360 - msg.escape_angle

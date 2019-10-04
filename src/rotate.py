@@ -92,7 +92,7 @@ def odometryCb(msg):
     orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
     (roll, pitch, yaw) = euler_from_quaternion (orientation_list)
     #Detect if yaw has gone full circle
-    if yaw + 5 < current_rotation or yaw - 5 > current_rotation:
+    if yaw + math.pi < current_rotation or yaw - math.pi > current_rotation:
         has_turned = True
     current_rotation = yaw
 
